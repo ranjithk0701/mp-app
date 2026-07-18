@@ -153,68 +153,72 @@ function App() {
         (<>
           <h1>Students</h1>
 
-      <input
-        type="text"
-        placeholder="Search by name..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ marginBottom: "10px", padding: "6px" }}
-      />
-        
+            <input
+              type="text"
+              placeholder="Search by name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ marginBottom: "10px", padding: "6px" }}
+            />
+              
 
-      <ul>
-        {filteredStudents.map((s) => (
-          <li key={s._id}>
-            {s.name} - {s.cgpa}
-            {token && role === "admin" && (
-              <button onClick={() => handleDelete(s._id)} style={{ marginLeft: "10px" }}>
-                Delete
-              </button>
+            <ul>
+              {filteredStudents.map((s) => (
+                <li key={s._id}>
+                  {s.name} - {s.cgpa}
+                  {token && role === "admin" && (
+                    <button onClick={() => handleDelete(s._id)} style={{ marginLeft: "10px" }}>
+                      Delete
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+            {filteredStudents.length === 0 && <p>No students found.</p>}
+            </>
             )}
-          </li>
-        ))}
-      </ul>
-      {filteredStudents.length === 0 && <p>No students found.</p>}
-      </>
+            {/* test result */}
+            { role === "admin" && (
+              <>
+                <div style={{ padding: "20px", fontFamily: "sans-serif", textAlign: "center", maxWidth: "500px", margin: "0 auto" }}>
+                  <h2>Add Test Result</h2>
+                    <form onSubmit={handleResultSubmit}>
+                      <input
+                        name="studentId"
+                        placeholder="Student ID"
+                        value={resultData.studentId}
+                        onChange={handleResultChange}
+                        style={{ display: "block", marginBottom: "10px" }}
+                      />
+                      <input
+                        name="testName"
+                        placeholder="Test Name"
+                        value={resultData.testName}
+                        onChange={handleResultChange}
+                        style={{ display: "block", marginBottom: "10px" }}
+                      />
+                      <input
+                      name="score"
+                      placeholder="Score"
+                      value={resultData.score}
+                      onChange={handleResultChange}
+                      style={{ display: "block", marginBottom: "10px" }}
+                    />
+                    <button type="submit">Add Result</button>
+                  </form>
+
+                <button onClick={fetchResults} style={{ marginTop: "10px" }}>Load Results</button>
+
+                <ul>
+                  {results.map((r) => (
+                    <li key={r._id}>
+                      {r.student?.name} - {r.testName} - {r.score}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+          </>
       )}
-      {/* test result */}
-      <div style={{ marginTop: "30px" }}>
-        <h2>Add Test Result</h2>
-          <form onSubmit={handleResultSubmit}>
-            <input
-              name="studentId"
-              placeholder="Student ID"
-              value={resultData.studentId}
-              onChange={handleResultChange}
-              style={{ display: "block", marginBottom: "10px" }}
-            />
-            <input
-              name="testName"
-              placeholder="Test Name"
-              value={resultData.testName}
-              onChange={handleResultChange}
-              style={{ display: "block", marginBottom: "10px" }}
-            />
-            <input
-              name="score"
-              placeholder="Score"
-              value={resultData.score}
-              onChange={handleResultChange}
-              style={{ display: "block", marginBottom: "10px" }}
-            />
-            <button type="submit">Add Result</button>
-          </form>
-
-          <button onClick={fetchResults} style={{ marginTop: "10px" }}>Load Results</button>
-
-          <ul>
-            {results.map((r) => (
-              <li key={r._id}>
-                {r.student?.name} - {r.testName} - {r.score}
-              </li>
-            ))}
-          </ul>
-      </div>
     </div>
   )};
 
