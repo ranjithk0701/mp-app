@@ -8,7 +8,7 @@ function App() {
   const [message, setMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(true);
 
-  const { data: students, loading, error } = useFetch("http://localhost:5000/students");
+  const { data: students, loading, error } = useFetch(`${import.meta.env.VITE_API_URL}/students`);
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleChange = (e) => {
