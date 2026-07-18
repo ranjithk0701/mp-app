@@ -76,6 +76,33 @@ function App() {
     s.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const [resultData, setResultData] = useState({ studentId: "", testName: "", score: "" });
+  const [results, setResults] = useState([]);
+
+  const handleResultChange = (e) => {
+    setResultData({ ...resultData, [e.target.name]: e.target.value });
+  };
+
+  const handleResultSubmit = (e) => {
+    e.preventDefault();
+    fetch(`${import.meta.env.VITE_API_URL}/students/results`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(resultData)
+    })
+      .then((res) => res.json())
+      .then(() => {
+        setResultData({ studentId: "", testName: "", score: "" });
+        fetchResults();
+      });
+  };
+
+  const fetchResults = () => {
+    fetch(`${import.meta.env.VITE_API_URL}/students/results`)
+      .then((res) => res.json())
+      .then((data) => setResults(data));
+  };
+
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
 
@@ -148,6 +175,44 @@ function App() {
       {filteredStudents.length === 0 && <p>No students found.</p>}
       </>
       )}
+    
+      <div style={{ marginTop: "30px" }}>
+        <h2>Add Test Result</h2>
+          <form onSubmit={handleResultSubmit}>
+            <input
+              name="studentId"
+              placeholder="Student ID"
+              value={resultData.studentId}
+              onChange={handleResultChange}
+              style={{ display: "block", marginBottom: "10px" }}
+            />
+            <input
+              name="testName"
+              placeholder="Test Name"
+              value={resultData.testName}
+              onChange={handleResultChange}
+              style={{ display: "block", marginBottom: "10px" }}
+            />
+            <input
+              name="score"
+              placeholder="Score"
+              value={resultData.score}
+              onChange={handleResultChange}
+              style={{ display: "block", marginBottom: "10px" }}
+            />
+            <button type="submit">Add Result</button>
+          </form>
+
+          <button onClick={fetchResults} style={{ marginTop: "10px" }}>Load Results</button>
+
+          <ul>
+            {results.map((r) => (
+              <li key={r._id}>
+                {r.student?.name} - {r.testName} - {r.score}
+              </li>
+            ))}
+          </ul>
+      </div>
     </div>
   )};
 
