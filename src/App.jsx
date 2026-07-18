@@ -68,9 +68,7 @@ function App() {
         setMessage(data.message);
       });
   };
-  const filteredStudents = students.filter((s) =>
-    s.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  
 
   const [resultData, setResultData] = useState({ studentId: "", testName: "", score: "" });
   const [results, setResults] = useState([]);
@@ -102,6 +100,11 @@ function App() {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
+
+  const filteredStudents = students.filter((s) =>
+    s.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
 
@@ -175,7 +178,6 @@ function App() {
       </>
       )}
       {/* test result */}
-      <h2>Add Test Result</h2>
       <div style={{ marginTop: "30px" }}>
         <h2>Add Test Result</h2>
           <form onSubmit={handleResultSubmit}>
