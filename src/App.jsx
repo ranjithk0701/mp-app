@@ -188,21 +188,21 @@ function App() {
                         placeholder="Student ID"
                         value={resultData.studentId}
                         onChange={handleResultChange}
-                        style={{ display: "block", marginBottom: "10px" }}
+                        style={{ display: "block", textAlign: "center", marginBottom: "10px" }}
                       />
                       <input
                         name="testName"
                         placeholder="Test Name"
                         value={resultData.testName}
                         onChange={handleResultChange}
-                        style={{ display: "block", marginBottom: "10px" }}
+                        style={{ display: "block", textAlign: "center", marginBottom: "10px" }}
                       />
                       <input
                       name="score"
                       placeholder="Score"
                       value={resultData.score}
                       onChange={handleResultChange}
-                      style={{ display: "block", marginBottom: "10px" }}
+                      style={{ display: "block", textAlign: "center", marginBottom: "10px" }}
                     />
                     <button type="submit">Add Result</button>
                   </form>
