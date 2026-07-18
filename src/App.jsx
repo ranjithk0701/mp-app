@@ -17,7 +17,7 @@ function App() {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    fetch("http://localhost:5000/register", {
+    fetch(`${import.meta.env.VITE_API_URL}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData)
@@ -31,7 +31,7 @@ function App() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    fetch("http://localhost:5000/login", {
+    fetch(`${import.meta.env.VITE_API_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData)
@@ -57,7 +57,7 @@ function App() {
   };
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/students/${id}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/students/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`
