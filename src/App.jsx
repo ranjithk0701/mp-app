@@ -68,10 +68,6 @@ function App() {
         setMessage(data.message);
       });
   };
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-
   const filteredStudents = students.filter((s) =>
     s.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -103,6 +99,9 @@ function App() {
       .then((data) => setResults(data));
   };
 
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
 
