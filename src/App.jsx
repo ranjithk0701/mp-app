@@ -175,6 +175,7 @@ function App() {
       </>
       )}
       {/* test result */}
+      <h2>Add Test Result</h2>
       <div style={{ marginTop: "30px" }}>
         <h2>Add Test Result</h2>
           <form onSubmit={handleResultSubmit}>
