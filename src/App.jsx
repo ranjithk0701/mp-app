@@ -1,0 +1,155 @@
+import { useState } from "react";
+import useFetch from "./useFetch";
+
+function App() {
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [role, setRole] = useState(localStorage.getItem("role"));
+  const [formData, setFormData] = useState({ email: "", password: "", role: "student" });
+  const [message, setMessage] = useState("");
+  const [isRegistering, setIsRegistering] = useState(true);
+
+  const { data: students, loading, error } = useFetch("http://localhost:5000/students");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    fetch("http://localhost:5000/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setMessage(data.message);
+        setFormData({ email: "", password: "", role: "student" });
+      });
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("role", data.role);
+          setToken(data.token);
+          setRole(data.role);
+        } else {
+          setMessage(data.message);
+        }
+      });
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    setToken(null);
+    setRole(null);
+  };
+
+  const handleDelete = (id) => {
+    fetch(`http://localhost:5000/students/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setMessage(data.message);
+      });
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
+  const filteredStudents = students.filter((s) =>
+    s.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
+
+      {!token && (
+        <div style={{ marginBottom: "30px", maxWidth: "300px" }}>
+          <h2>{isRegistering ? "Register" : "Login"}</h2>
+          <form onSubmit={isRegistering ? handleRegister : handleLogin}>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              style={{ display: "block", marginBottom: "10px", width: "100%" }}
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              style={{ display: "block", marginBottom: "10px", width: "100%" }}
+            />
+            {isRegistering && (
+              <select name="role" value={formData.role} onChange={handleChange} style={{ display: "block", marginBottom: "10px" }}>
+                <option value="student">Student</option>
+                <option value="admin">Admin</option>
+              </select>
+            )}
+            <button type="submit">{isRegistering ? "Register" : "Login"}</button>
+          </form>
+          {message && <p>{message}</p>}
+          <button onClick={() => setIsRegistering(!isRegistering)}>
+            {isRegistering ? "Already have an account? Login" : "Need an account? Register"}
+          </button>
+        </div>
+      )}
+
+      {token && (
+        <div style={{ marginBottom: "20px" }}>
+          <p>Logged in as: {role}</p>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      )}
+      {role === "admin"  && 
+        (<>
+          <h1>Students</h1>
+
+      <input
+        type="text"
+        placeholder="Search by name..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ marginBottom: "10px", padding: "6px" }}
+      />
+        
+
+      <ul>
+        {filteredStudents.map((s) => (
+          <li key={s._id}>
+            {s.name} - {s.cgpa}
+            {token && role === "admin" && (
+              <button onClick={() => handleDelete(s._id)} style={{ marginLeft: "10px" }}>
+                Delete
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+      {filteredStudents.length === 0 && <p>No students found.</p>}
+      </>
+      )}
+    </div>
+  )};
+
+
+export default App;
